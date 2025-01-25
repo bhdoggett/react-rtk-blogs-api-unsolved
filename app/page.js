@@ -1,37 +1,44 @@
-'use client';
-import styles from './page.module.css';
-import Link from 'next/link';
-import { useSelector } from 'react-redux';
+"use client";
+import styles from "./page.module.css";
+import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchPosts } from "./store/slices/posts";
+import { useEffect } from "react";
 
 export default function Home() {
-	const posts = useSelector((state) => state.posts.posts);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, [dispatch]);
 
-	const renderPosts = () => {
-		if (posts.length > 0) {
-			return posts.map((post) => {
-				return (
-					<li className='list-group-item' key={post.id}>
-						<Link href={`/posts/${post.id}`}>{post.title}</Link>
-					</li>
-				);
-			});
-		} else {
-			return <div>No posts to show</div>;
-		}
-	};
+  const posts = useSelector((state) => state.posts.posts);
 
-	return (
-		<main className={styles.main}>
-			<div>
-				<div className='text-xs-right'>
-					<Link className='btn btn-primary' href='/posts/new'>
-						Add a Post
-					</Link>
-				</div>
-				<br></br>
-				<h3>Posts</h3>
-				<ul className='list-group'>{renderPosts()}</ul>
-			</div>
-		</main>
-	);
+  const renderPosts = () => {
+    if (posts.length > 0) {
+      return posts.map((post) => {
+        return (
+          <li className="list-group-item" key={post._id}>
+            <Link href={`/posts/${post._id}`}>{post.title}</Link>
+          </li>
+        );
+      });
+    } else {
+      return <div>No posts to show</div>;
+    }
+  };
+
+  return (
+    <main className={styles.main}>
+      <div>
+        <div className="text-xs-right">
+          <Link className="btn btn-primary" href="/posts/new">
+            Add a Post
+          </Link>
+        </div>
+        <br></br>
+        <h3>Posts</h3>
+        <ul className="list-group">{renderPosts()}</ul>
+      </div>
+    </main>
+  );
 }
